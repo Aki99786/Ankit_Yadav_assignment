@@ -1,0 +1,25 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+#  Kubernetes Service — exposes the Deployment externally via LoadBalancer
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: v1
+kind: Service
+metadata:
+  name: immerverse-service
+  namespace: immerverse
+  labels:
+    app: immerverse-app
+  annotations:
+    # AWS ELB annotations (used when deploying to EKS)
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: immerverse-app
+  ports:
+    - name: http
+      port: 80            # External port
+      targetPort: 3000    # Container port
+      protocol: TCP
+  sessionAffinity: None

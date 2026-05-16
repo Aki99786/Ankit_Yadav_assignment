@@ -1,0 +1,29 @@
+{
+  "name": "immerverse-cicd-app",
+  "version": "1.0.0",
+  "description": "Sample Node.js app for DevOps CI/CD pipeline demonstration",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest --forceExit --coverage",
+    "test:ci": "jest --forceExit --coverage --ci --reporters=default --reporters=jest-junit"
+  },
+  "keywords": ["devops", "cicd", "docker", "kubernetes", "jenkins"],
+  "author": "DevOps Engineer",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "nodemon": "^3.0.2",
+    "jest-junit": "^16.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": ["app.js"]
+  }
+}

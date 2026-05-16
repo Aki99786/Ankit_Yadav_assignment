@@ -1,0 +1,34 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+#  Kubernetes Ingress — routes external HTTP traffic to the service
+#  Requires an Ingress Controller (e.g., nginx-ingress or AWS ALB Ingress)
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: immerverse-ingress
+  namespace: immerverse
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # For AWS ALB Ingress Controller, replace with:
+    # kubernetes.io/ingress.class: "alb"
+    # alb.ingress.kubernetes.io/scheme: internet-facing
+    # alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - host: immerverse.your-domain.com    # ← change to your domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: immerverse-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - immerverse.your-domain.com
+      secretName: immerverse-tls-secret   # Pre-created TLS secret
