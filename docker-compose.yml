@@ -34,23 +34,15 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: cadvisor
-    environment:
-      - DOCKER_API_VERSION=1.45
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - /var/lib/docker/:/rootfs/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
     devices:
       - /dev/kmsg
-    command:
-      - '--enabled_container_env=containerd,systemd,raw'
-      - '--containerd=/var/run/containerd/containerd.sock'
 
