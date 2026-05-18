@@ -11,6 +11,3 @@ scrape_configs:
     static_configs:
       - targets: ['nodejs-app:3000']
 
-  - job_name: 'cadvisor'
-    static_configs:
-      - targets: ['cadvisor:8080']
