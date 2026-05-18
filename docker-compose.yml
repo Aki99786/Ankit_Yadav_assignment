@@ -43,7 +43,10 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
     devices:
       - /dev/kmsg
+    command:
+      - '--docker_only=true'
 
