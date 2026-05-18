@@ -6,23 +6,21 @@ collectDefaultMetrics({ register, timeout: 5000 });
 
 const app = express();
 
-// Define the exact Histogram metric the Grafana dashboard expects
 const httpRequestDurationSeconds = new Histogram({
     name: "http_request_duration_seconds",
     help: "Duration of HTTP requests in seconds",
     labelNames: ["method", "path", "status_code", "status"],
-    buckets: [0.1, 0.3, 0.5, 0.9, 1.5, 3, 5, 10] // Supports the le="1.5" and le="10" queries
+    buckets: [0.1, 0.3, 0.5, 0.9, 1.5, 3, 5, 10]
 });
 
-// Advanced Path Normalizer to replace dynamic parameters/IDs with '#val' matching dashboard queries
 function normalizePath(path) {
     let normalized = path.replace(/\/$/, "");
     if (!normalized) return "/";
 
     const staticKeywords = new Set([
-        "api", "customers", "subscription", "add", "customer-technical", "config", "info", "detail", 
-        "list", "byCustomer", "status", "update", "namesbySearch", "invoices", "invoice-number", 
-        "routers", "router-queue", "bull-ui", "queue", "transaction-queue", "ryze-sorting-queue", 
+        "api", "customers", "subscription", "add", "customer-technical", "config", "info", "detail",
+        "list", "byCustomer", "status", "update", "namesbySearch", "invoices", "invoice-number",
+        "routers", "router-queue", "bull-ui", "queue", "transaction-queue", "ryze-sorting-queue",
         "mikrotik-sq-queue", "get", "all", "auth", "me", "login"
     ]);
 
@@ -34,7 +32,7 @@ function normalizePath(path) {
         }
         return "#val";
     });
-    
+
     return mappedSegments.join("/");
 }
 
@@ -43,16 +41,16 @@ app.use((req, res, next) => {
     const start = Date.now();
     res.on("finish", () => {
         const durationInSeconds = (Date.now() - start) / 1000;
-        
+
         if (req.path !== "/metrics") {
             const normalizedPath = normalizePath(req.path);
             const statusCodeStr = res.statusCode.toString();
-            
+
             httpRequestDurationSeconds.labels(
                 req.method,
                 normalizedPath,
-                statusCodeStr,     // status_code label
-                statusCodeStr      // status label
+                statusCodeStr,
+                statusCodeStr
             ).observe(durationInSeconds);
         }
     });
@@ -60,9 +58,9 @@ app.use((req, res, next) => {
 });
 
 app.get('/metrics', async (req, res) => {
-  res.setHeader('Content-Type', register.contentType);
-  const metrics = await register.metrics();
-  res.send(metrics);
+    res.setHeader('Content-Type', register.contentType);
+    const metrics = await register.metrics();
+    res.send(metrics);
 });
 
 
@@ -151,13 +149,13 @@ app.get("/api/simulate", (req, res) => {
             randomMethod = "POST";
         }
         const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-        
+
         // Random latency between 10ms and 2000ms
         const latency = Math.floor(Math.random() * 2000);
-        
+
         const normalized = normalizePath(randomPath);
         const statusStr = randomStatus.toString();
-        
+
         httpRequestDurationSeconds.labels(randomMethod, normalized, statusStr, statusStr).observe(latency / 1000);
     }
 
