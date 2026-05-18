@@ -20,7 +20,15 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - monitor-net
-
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - monitor-net
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
