@@ -34,7 +34,7 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: cadvisor
     volumes:
       - /:/rootfs:ro
