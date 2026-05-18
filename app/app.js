@@ -1,15 +1,38 @@
 const express = require("express");
-const client = require("prom-client");
+const { collectDefaultMetrics, register, Counter, Gauge } = require("prom-client");
 
-// Collect default system metrics (CPU, memory, etc.)
-client.collectDefaultMetrics();
+// Collect default system metrics (CPU, memory, etc.) every 5 seconds
+collectDefaultMetrics({ register, timeout: 5000 });
 
 const app = express();
 
-app.get("/metrics", async (req, res) => {
-    res.set("Content-Type", client.register.contentType);
-    res.end(await client.register.metrics());
+const httpMetricsLabelNames = ["method", "path"];
+const totalHttpRequestCount = new Counter({
+    name: "nodejs_http_total_count",
+    help: "total request number",
+    labelNames: httpMetricsLabelNames
 });
+const totalHttpRequestDuration = new Gauge({
+    name: "nodejs_http_total_duration",
+    help: "the response time of the last request",
+    labelNames: httpMetricsLabelNames
+});
+
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on("finish", () => {
+        totalHttpRequestCount.labels(req.method, req.path).inc();
+        totalHttpRequestDuration.labels(req.method, req.path).set(Date.now() - start);
+    });
+    next();
+});
+
+app.get('/metrics', async (req, res) => {
+  res.setHeader('Content-Type', register.contentType);
+  const metrics = await register.metrics();
+  res.send(metrics);
+});
+
 
 
 app.get("/", (req, res) => {

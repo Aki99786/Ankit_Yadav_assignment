@@ -1,5 +1,5 @@
 global:
-  scrape_interval: 4s
+  scrape_interval: 5s
 
 scrape_configs:
 
@@ -9,7 +9,7 @@ scrape_configs:
 
   - job_name: 'nodejs-app'
     static_configs:
-      - targets: ['app:3000']
+      - targets: ['nodejs-app:3000']
 
   - job_name: 'cadvisor'
     static_configs:
