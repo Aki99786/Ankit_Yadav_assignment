@@ -3,7 +3,7 @@ version: '3'
 services:
 
   app:
-    image: 451712634800.dkr.ecr.ap-south-1.amazonaws.com/sample-devops-app:latest
+    image: 451712634800.dkr.ecr.ap-south-1.amazonaws.com/sample-devops-app:latest # Trigger pipeline
 
     container_name: sample-app
 
