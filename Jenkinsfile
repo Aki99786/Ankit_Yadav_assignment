@@ -27,9 +27,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                cd app
-                npm install
-                npm test
+                docker run --rm sample-devops-app:latest npm test
                 '''
             }
         }
