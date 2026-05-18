@@ -12,7 +12,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/Aki99786/Ankit_Yadav_assignment.git'
+                git branch: 'main', url: 'https://github.com/Aki99786/Ankit_Yadav_assignment.git'
             }
         }
 
