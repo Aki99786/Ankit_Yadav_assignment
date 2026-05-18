@@ -66,11 +66,8 @@ pipeline {
         stage('Deploy Application') {
             steps {
                 sh '''
-                docker compose down || true
-
-                docker compose pull
-
-                docker compose up -d
+                docker compose pull nodejs-app
+                docker compose up -d --no-deps nodejs-app
                 '''
             }
         }
